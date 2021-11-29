@@ -1,0 +1,47 @@
+name: create_new_AMI
+
+on: workflow_dispatch
+
+jobs:
+  packer:
+    runs-on: ubuntu-latest
+    name: packer
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
+      - name: mkdir for .env file
+        run: mkdir AMI/playbook/roles/webserver/files
+
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v1.2
+        with:
+          envkey_REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}
+          directory: AMI/playbook/roles/webserver/files
+
+      - name: Install Ansible
+        run: "sudo apt-get install -y ansible"
+        shell: bash
+
+      - name: Install Packer
+        uses: myci-actions/add-deb-repo@10
+        with:
+          repo: deb [arch=amd64] https://apt.releases.hashicorp.com focal main
+          keys-asc: https://apt.releases.hashicorp.com/gpg
+          update: true
+          install: packer
+
+      - name: Packer init
+        run: "packer init AMI/packer/FE_ami.pkr.hcl"
+
+      - name: Packer build
+        run: "packer build AMI/packer/FE_ami.pkr.hcl"
+        env:
+          TF_VAR_git_access_token: ${{ secrets.TF_VAR_git_access_token }}
