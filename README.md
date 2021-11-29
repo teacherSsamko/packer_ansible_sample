@@ -19,4 +19,4 @@ Sample code for creating AWS AMI using packer &amp; ansible
 ## commands
 
 1. `cd packer`
-2. `packer build react_ami.json`
+2. `packer build react_ami.pkr.hcl`
