@@ -2,6 +2,9 @@
 
 Sample code for creating AWS AMI using packer &amp; ansible
 
+FE: react app
+BE: django app
+
 ## Requirements
 
 ### install packer
@@ -18,5 +21,5 @@ Sample code for creating AWS AMI using packer &amp; ansible
 
 ## commands
 
-1. `cd packer`
-2. `packer build react_ami.pkr.hcl`
+1. `packer build FE/react_ami.pkr.hcl`
+1. `packer build BE/django_ami.pkr.hcl`
