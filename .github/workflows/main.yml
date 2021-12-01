@@ -18,13 +18,13 @@ jobs:
           aws-region: us-west-2
 
       - name: mkdir for .env file
-        run: mkdir AMI/playbook/roles/webserver/files
+        run: mkdir FE/playbook/roles/webserver/files
 
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v1.2
         with:
           envkey_REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}
-          directory: AMI/playbook/roles/webserver/files
+          directory: FE/playbook/roles/webserver/files
 
       - name: Install Ansible
         run: "sudo apt-get install -y ansible"
@@ -39,9 +39,9 @@ jobs:
           install: packer
 
       - name: Packer init
-        run: "packer init AMI/packer/FE_ami.pkr.hcl"
+        run: "packer init FE/packer/react_ami.pkr.hcl"
 
       - name: Packer build
-        run: "packer build AMI/packer/FE_ami.pkr.hcl"
+        run: "packer build FE/packer/react_ami.pkr.hcl"
         env:
           TF_VAR_git_access_token: ${{ secrets.TF_VAR_git_access_token }}
