@@ -1,0 +1,45 @@
+- name: update apt
+  become: true
+  become_user: root
+  apt:
+    update_cache: true
+    cache_valid_time: 86400
+
+- name: install packages
+  become: true
+  become_user: root
+  apt:
+    pkg:
+      - nginx
+      - python3-pip
+      - python3.8-venv
+      - python3-dev
+      - build-essential
+      - libssl-dev
+      - libffi-dev
+      - libxml2-dev
+      - libxslt1-dev
+      - zlib1g-dev
+      - default-libmysqlclient-dev
+      - unzip
+      - git
+      - cmake
+    update_cache: true
+    cache_valid_time: 86400
+
+- name: install aws-cli
+  become_user: ubuntu
+  shell: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && sudo ./aws/install
+
+- name: make .aws dir
+  shell: mkdir -p ~/.aws
+
+- name: copy aws config
+  ansible.builtin.copy:
+    src: ../files/.aws_config
+    dest: /home/ubuntu/.aws/config
+
+- name: copy aws credentials
+  ansible.builtin.copy:
+    src: ../files/.aws_credentials
+    dest: /home/ubuntu/.aws/credentials

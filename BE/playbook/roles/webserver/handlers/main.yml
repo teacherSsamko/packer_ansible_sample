@@ -1,0 +1,6 @@
+- name: Restart gunicorn
+  become: true
+  become_user: root
+  service:
+    name: gunicorn
+    state: restarted

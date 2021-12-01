@@ -1,0 +1,18 @@
+[Unit]
+Description=gunicorn
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/ssamko_backend/
+Environment="DJANGO_SETTINGS_MODULE=hits.ssamko_backend.dev"
+Environment="DJANGO_SECRET_KEY={{ django_secret_key }}"
+ExecStart=/home/ubuntu/ssamko_backend/venv/bin/gunicorn \
+        --workers 3 \
+				--timeout 3600 \
+        --bind unix:/home/ubuntu/ssamko_backend/gunicorn.sock \
+        hits.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

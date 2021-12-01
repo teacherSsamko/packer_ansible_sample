@@ -1,0 +1,19 @@
+server {
+        listen 8000;
+        server_name ssamko.com;
+
+        client_max_body_size 100M;
+
+        location / {
+                include proxy_params;
+                proxy_pass http://unix:/home/ubuntu/ssamko/gunicorn.sock;
+                proxy_connect_timeout 10m;
+                proxy_send_timeout 10m;
+                proxy_read_timeout 10m;
+                send_timeout 10m;
+        }
+
+        location /static/ {
+                alias /home/ubuntu/static/;
+        }
+}

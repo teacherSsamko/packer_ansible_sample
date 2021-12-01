@@ -1,0 +1,9 @@
+- name: Build Ubuntu 20.04 LTS Base Image (django)
+  hosts: "*"
+  vars:
+    git_token: "{{lookup('env', 'TF_VAR_git_access_token')}}"
+    django_secret_key: "{{lookup('env', 'DJANGO_SECRET_KEY')}}"
+  roles:
+    - common
+    - nginx
+    - webserver

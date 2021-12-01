@@ -1,0 +1,28 @@
+- name: Clone the Backend(django) repository
+  ansible.builtin.git:
+    repo: https://{{ git_token }}@github.com/teacherSsamko/ssamko_backend.git
+    dest: /home/ubuntu/ssamko_backend
+
+- name: create virtual environment
+  shell: "python3 -m venv /home/ubuntu/ssamko_backend/venv"
+
+- name: install requirements
+  shell: "source /home/ubuntu/ssamko_backend/venv/bin/activate && pip install 2to3 wheel gunicorn && pip install -r /home/ubuntu/ssamko_backend/requirements.txt"
+  args:
+    executable: /bin/bash
+
+- name: set secret_key in bashrc
+  shell: 'echo ''export DJANGO_SECRET_KEY="{{ django_secret_key }}"'' >> /home/ubuntu/.bashrc'
+
+- name: Apply gunicorn template
+  become: true
+  become_user: root
+  template:
+    src: ../templates/gunicorn.service.j2
+    dest: /etc/systemd/system/gunicorn.service
+  notify: Restart gunicorn
+
+- name: collect statics
+  shell: "source /home/ubuntu/ssamko_backend/venv/bin/activate && python /home/ubuntu/ssamko_backend/manage.py collectstatic --settings=ssamko.settings.production"
+  args:
+    executable: /bin/bash
